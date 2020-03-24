@@ -98,17 +98,11 @@ measure = []
 method =''
 k_val=(5,10,15,20,25)
 for kvalue in k_val:
-
     for algorithm in [(KNNBasic(k_val=kvalue, sim_options = {'method':'MSD', 'user_based': True }))]:
-    
-       
-  
         performance = cross_validate(algorithm, data, measures=['RMSE'], cv=3, verbose=False)
-   
         data_temp = pd.DataFrame.from_dict(performance).mean(axis=0)
         data_temp = data_temp.append(pd.Series([str(algorithm).split(' ')[0].split('.')[-1]], index=['Algorithm']))
         measure.append(data_temp)
-    
 UserBased_Dataset=pd.DataFrame(measure).set_index('Algorithm').sort_values('test_rmse')
 print(UserBased_Dataset)
 pic.bar(k_val,UserBased_Dataset.test_rmse,color='blue',align='center', alpha=0.5)
@@ -117,15 +111,12 @@ pic.show()
 #Q15.b
 measure = []
 for kvalue in k_val:
-
     for algorithm in [(KNNBasic(k_val=kvalue, sim_options = {'name':'MSD', 'user_based': False }))]:
         performance = cross_validate(algorithm, data, measures=['RMSE'], cv=3, verbose=False)
         data_temp = pd.DataFrame.from_dict(performance).mean(axis=0)
         data_temp = data_temp.append(pd.Series([str(algorithm).split(' ')[0].split('.')[-1]], index=['Algorithm']))
         measure.append(data_temp)
-    
 ItemBased_Dataset=pd.DataFrame(measure).set_index('Algorithm').sort_values('test_rmse')
 print(ItemBased_Dataset)
 pic.bar(k_val,ItemBased_Dataset.test_rmse,color='green',align='center', alpha=0.5)
 pic.show()
-
