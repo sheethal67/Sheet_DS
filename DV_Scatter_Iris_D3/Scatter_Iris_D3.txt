@@ -1,1 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>IRIS Scatter Plot</title>
+  <script src="d3.v4.js"></script>
+  <script src="iris.js"></script>
+</head>
+<body>
 
+<script>
+  let WIDTH  = window.innerWidth - 15;
+	let HEIGHT = window.innerHeight - 21;
+	let margin = {top: 50, right: 50, bottom: 100, left: 100};
+	let width = WIDTH - margin.left - margin.right;   // plot width of Chart container
+	let height = HEIGHT - margin.top - margin.bottom; // plot height of Chart container
+
+	let svg = d3.select("body")
+		.append("svg")
+		.attr("width", WIDTH)
+		.attr("height", HEIGHT);
+
+	svg.append("rect")
+		.attr("width", WIDTH)
+		.attr("height", HEIGHT)
+		.style("stroke", "lightgray")
+		.style("fill", "none");
+
+  let chartContainer = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	chartContainer.append("rect")
+		.attr("width", width)
+		.attr("height", height)
+		.style("stroke", "lightgray")
+		.style("fill", "none");
+	
+	let xMin = d3.min(irisData, function(d){return d.Sepal_Width});
+	let xMax = d3.max(irisData, function(d){return d.Sepal_Width});
+	let yMin = d3.min(irisData, function(d){return d.Sepal_Length});
+	let yMax = d3.max(irisData, function(d){return d.Sepal_Length});
+	let xScale = d3.scaleLinear().domain([xMin, xMax]).range([0, width]);
+	let yScale = d3.scaleLinear().domain([yMin,yMax]).range([height,0]); // See the range!!
+
+	let colorScale = d3.scaleOrdinal()
+	    .domain(["setosa","versicolor","virginica"])
+	    .range(d3.schemeCategory10)
+
+	let toolTipText = chartContainer.append("text")
+		.style("font-family","sans-serif")
+		.style("font-size","20px")
+		.attr("dominant-baseline", "ideographic")
+		.text("");
+
+  chartContainer.append('g')
+    .selectAll("dot")
+		.data(irisData)
+		.enter()
+		.append("circle")
+    .attr("cx", function (d) { return xScale(d.Sepal_Width); } )
+    .attr("cy", function (d) { return yScale(d.Sepal_Length); } )
+    .attr("r", 7)
+    .style("fill",function(d){return colorScale(d.Species);})
+
+		.on("mouseover", function(d,i){
+			d3.select(this)
+				.style("stroke", "black");
+			toolTipText
+				.attr("x", xScale(d.Sepal_Width))
+				.attr("y", yScale(d.Sepal_Length))
+				.text(d.Species);
+	
+			let xy = d3.mouse(this);
+		})
+		
+		.on("mouseout", function(d,i){
+			d3.select(this)
+				.style("stroke", "none");	
+			toolTipText.text("");
+		});
+		
+	// Add axes
+	let xAxis = d3.axisBottom().scale(xScale);
+	chartContainer.append('g').attr('transform', 'translate(0,' + height + ')').call(xAxis)
+	let yAxis = d3.axisLeft(yScale);
+	chartContainer.append('g').call(yAxis);
+
+  // Add Labels
+ chartContainer.append("text")             
+    .attr("text-anchor", "middle")  // Centre the text 
+		.attr("transform", "translate("+ (width/2) +","+(height+(margin.bottom/3))+")")  
+		.text("Sepal.Width");
+
+  chartContainer.append("text")
+    .attr("text-anchor", "middle")  // Centre the text
+		.attr("transform", "translate("+ (-margin.left/3) +","+(height/2)+")rotate(-90)")  
+		.text("Sepal.Length");
+
+</script>
+</body>
+</html>
