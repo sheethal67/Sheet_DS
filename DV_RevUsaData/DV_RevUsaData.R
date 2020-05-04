@@ -21,7 +21,7 @@ library(sqldf)
 #Import & read data
 df_src<-get_dataset("REVUSA")
 
-write.csv(df_src,"D:/Analyitcs/UCF/1.Monday - Interactive_Data_Visualization/Assignment/DV_Assign03/RevUsaData.csv")
+write.csv(df_src,"...../RevUsaData.csv")
 
 head(df_src)
 
