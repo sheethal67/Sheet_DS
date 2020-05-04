@@ -11,7 +11,7 @@ library(lubridate)
 library(ggthemes)
 
 #Import & read data
-df_src<-read.csv("D:/Analyitcs/UCF/Assignment/Approval_Topline.csv")
+df_src<-read.csv("..../Approval_Topline.csv")
 df_src
 head(df_src)
 str(df_src)
